@@ -59,7 +59,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   /* Hero */
   .hero{background:linear-gradient(180deg,#fff 0%,var(--bg-2) 100%);overflow:hidden}
   .hero .wrap{display:grid;grid-template-columns:1.02fr 1fr;gap:40px;align-items:center;padding-top:72px;padding-bottom:64px}
-  .hero h1{font-size:clamp(36px,5vw,60px);font-weight:800;margin:14px 0 18px}
+  /* One sentence per line. The longest line is ~10.6em wide, so the font scales with
+     the text column (~552px at full width -> 49px max) instead of wrapping mid-sentence. */
+  .hero h1{font-size:clamp(28px,calc(4.5vw - 4px),49px);font-weight:800;margin:14px 0 18px}
+  .hero h1 > span,.hero h1 > em{display:block}
+  @media (min-width:360px){.hero h1 > span,.hero h1 > em{white-space:nowrap}}
   .hero h1 em{font-style:normal;color:var(--red)}
   .hero p.lede{font-size:clamp(17px,1.6vw,19px);color:var(--ink-2);max-width:520px;margin:0 0 28px}
   .hero .ctas{display:flex;gap:12px;flex-wrap:wrap}
@@ -75,9 +79,41 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .award strong{font-size:13px;display:block;line-height:1.25}
   @media (max-width:900px){
     .hero .wrap{grid-template-columns:1fr;padding-top:44px;gap:24px}
+    /* Single column: the title gets the full width, so it can be larger */
+    .hero h1{font-size:clamp(28px,calc(8.6vw - 4px),52px)}
     .hero-visual{order:-1;padding-bottom:0}
     .award{position:static;margin:16px auto 0;width:fit-content}
   }
+
+  /* Image Carousel */
+  /* Outer grid: images + overlaid arrows on row 1, dots centred under the images on row 2 */
+  #carousel__container{display:grid;grid-template-columns:minmax(0,1fr);align-items:center;width:100%}
+  .carousel__viewport{grid-column:1;grid-row:1;aspect-ratio:3/2;overflow:hidden;border-radius:var(--r);background:#fff;box-shadow:0 30px 40px rgba(0,0,0,.18);touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:grab}
+  .carousel__viewport.is-dragging{cursor:grabbing}
+  .carousel__track{display:flex;height:100%;transition:transform .8s ease}
+  .img__container{flex:0 0 100%;height:100%;padding:16px}
+  /* contain = scale the whole image to fit (letterboxed on white) instead of cropping */
+  .img__container > img{width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;-webkit-user-drag:none}
+  /* Scoped class so it doesn't override the site-wide .btn */
+  /* Arrows share the image's grid cell, so they sit on top of it */
+  .carousel__btn{grid-column:1;grid-row:1;z-index:1;width:40px;height:40px;padding:0;border:0;border-radius:50%;background:none;color:var(--ink);display:grid;place-items:center;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.15);opacity:.35;transition:opacity .2s,background .15s,color .15s}
+  .carousel__btn:hover,.carousel__btn:focus-visible{opacity:1;}
+  .carousel__btn:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+  #prev-btn{justify-self:start;margin-left:12px}
+  #next-btn{justify-self:end;margin-right:12px}
+  /* Dots also share the image's cell, pinned to the bottom edge */
+  .carousel__dots{grid-column:1;grid-row:1;align-self:end;z-index:1;margin:0 64px 14px;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;opacity:.45;transition:opacity .2s}
+  .carousel__dots:hover,.carousel__dots:focus-within{opacity:1}
+  .carousel__dots button{width:9px;height:9px;padding:0;border:0;border-radius:999px;background:#C9CCD2;cursor:pointer;transition:width .2s,background .2s}
+  .carousel__dots button[aria-current="true"]{width:24px;background:var(--red)}
+  @media (max-width:600px){
+    .carousel__btn{width:34px;height:34px}
+    .carousel__dots{margin:0 48px 10px;gap:6px}
+    #prev-btn{margin-left:8px}
+    #next-btn{margin-right:8px}
+    .img__container{padding:8px}
+  }
+  @media (prefers-reduced-motion:reduce){.carousel__track{transition:none}}
 
   /* Form section */
   .demo{padding:72px 0;background:#fff}
@@ -230,23 +266,101 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="wrap">
     <div>
       <span class="eyebrow">Lenovo ThinkSmart One Pro</span>
-      <h1>Every voice heard. <em>Every room simpler.</em></h1>
+      <h1><span>Every voice heard.</span> <em>Every room simpler.</em></h1>
       <p class="lede">An all-in-one collaboration bar with camera, eight beamforming microphones, speakers and Intel-powered compute built in. Help your customers refresh small meeting rooms with award-winning audio — on Microsoft Teams Rooms or Zoom Rooms.</p>
       <div class="ctas">
         <a class="btn btn-red" href="#demo" data-track="cta_hero">Request a demo</a>
         <a class="btn btn-ghost" href="#overview">Why ThinkSmart One Pro</a>
       </div>
-      <div class="badges">
+      <!-- <div class="badges">
         <span class="chip"><span class="dot" style="background:#5B5FC7"></span>Microsoft Teams Rooms</span>
         <span class="chip"><span class="dot" style="background:#0B5CFF"></span>Zoom Rooms</span>
         <span class="chip"><span class="dot" style="background:var(--intel)"></span>Intel® Core™ i5 with vPro®</span>
-      </div>
+      </div> -->
     </div>
     <div class="hero-visual">
-      <img src="./assets/images/lenovo-thinksmart-one-pro.jpg" alt="Lenovo ThinkSmart One Pro collaboration bar" width="714" height="326" fetchpriority="high" decoding="async">
+      <!-- <img src="./assets/images/lenovo-thinksmart-one-pro.jpg" alt="Lenovo ThinkSmart One Pro collaboration bar" width="714" height="326" fetchpriority="high" decoding="async">
       <div class="award" aria-label="PAL Labs testing award">
         <span class="num">#1</span>
         <span><strong>Top audio scores to date</strong><small>PAL Acoustics &amp; Audio Labs, near- &amp; far-end testing</small></span>
+      </div> -->
+      <div id="carousel__container" role="region" aria-roledescription="carousel" aria-label="Product images">
+        <button id="prev-btn" class="carousel__btn" type="button" aria-label="Previous image"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <div class="carousel__viewport">
+          <div class="carousel__track">
+            <div class="img__container">
+              <img class="carousel__img" src="./assets/images/ThinkSmart_One_Pro_for_Microsoft_Team_Rooms_CT2_10.avif" alt="carousel-img" loading="lazy" decoding="async">
+            </div>
+            <div class="img__container">
+              <img class="carousel__img" src="./assets/images/ThinkSmart_One_Pro_for_Microsoft_Team_Rooms_CT2_11.avif" alt="carousel-img" loading="lazy" decoding="async">
+            </div>
+            <div class="img__container">
+              <img class="carousel__img" src="./assets/images/ThinkSmart_One_Pro_for_Microsoft_Team_Rooms_CT2_09.avif" alt="carousel-img" loading="lazy" decoding="async">
+            </div>
+            <div class="img__container">
+              <img class="carousel__img" src="./assets/images/ThinkSmart_One_Pro_for_Microsoft_Team_Rooms_CT1_01.avif" alt="Lenovo ThinkSmart One Pro" loading="lazy" decoding="async">
+            </div>
+            <div class="img__container">
+              <img class="carousel__img" src="./assets/images/ThinkSmart_One_Pro_for_Microsoft_Team_Rooms_CT1_02.avif" alt="Lenovo ThinkSmart One Pro" loading="lazy" decoding="async">
+            </div>
+            <div class="img__container">
+              <img class="carousel__img" src="./assets/images/ThinkSmart_One_Pro_for_Microsoft_Team_Rooms_CT1_03.avif" alt="Lenovo ThinkSmart One Pro" loading="lazy" decoding="async">
+            </div>
+            <div class="img__container">
+              <img class="carousel__img" src="./assets/images/ThinkSmart_One_Pro_for_Microsoft_Team_Rooms_CT1_04.avif" alt="Lenovo ThinkSmart One Pro" loading="lazy" decoding="async">
+            </div>
+            <div class="img__container">
+              <img class="carousel__img" src="./assets/images/ThinkSmart_One_Pro_for_Microsoft_Team_Rooms_CT2_01.avif" alt="Lenovo ThinkSmart One Pro" loading="lazy" decoding="async">
+            </div>
+            <div class="img__container">
+              <img class="carousel__img" src="./assets/images/ThinkSmart_One_Pro_for_Microsoft_Team_Rooms_CT2_02.avif" alt="Lenovo ThinkSmart One Pro" loading="lazy" decoding="async">
+            </div>
+            <div class="img__container">
+              <img class="carousel__img" src="./assets/images/ThinkSmart_One_Pro_for_Microsoft_Team_Rooms_CT2_03.avif" alt="Lenovo ThinkSmart One Pro" loading="lazy" decoding="async">
+            </div>
+            <div class="img__container">
+              <img class="carousel__img" src="./assets/images/ThinkSmart_One_Pro_for_Microsoft_Team_Rooms_CT2_04.avif" alt="Lenovo ThinkSmart One Pro" loading="lazy" decoding="async">
+            </div>
+            <div class="img__container">
+              <img class="carousel__img" src="./assets/images/ThinkSmart_One_Pro_for_Microsoft_Team_Rooms_CT2_05.avif" alt="Lenovo ThinkSmart One Pro" loading="lazy" decoding="async">
+            </div>
+            <div class="img__container">
+              <img class="carousel__img" src="./assets/images/ThinkSmart_One_Pro_for_Microsoft_Team_Rooms_CT2_06.avif" alt="Lenovo ThinkSmart One Pro" loading="lazy" decoding="async">
+            </div>
+            <div class="img__container">
+              <img class="carousel__img" src="./assets/images/ThinkSmart_One_Pro_for_Microsoft_Team_Rooms_CT2_07.avif" alt="Lenovo ThinkSmart One Pro" loading="lazy" decoding="async">
+            </div>
+            <div class="img__container">
+              <img class="carousel__img" src="./assets/images/ThinkSmart_One_Pro_for_Microsoft_Team_Rooms_CT2_08.avif" alt="Lenovo ThinkSmart One Pro" loading="lazy" decoding="async">
+            </div>
+            <div class="img__container">
+              <img class="carousel__img" src="./assets/images/ThinkSmart_One_Pro_for_Microsoft_Team_Rooms_CT2_12.avif" alt="Lenovo ThinkSmart One Pro" loading="lazy" decoding="async">
+            </div>
+            <div class="img__container">
+              <img class="carousel__img" src="./assets/images/ThinkSmart_One_Pro_for_Microsoft_Team_Rooms_CT2_13.avif" alt="Lenovo ThinkSmart One Pro" loading="lazy" decoding="async">
+            </div>
+            <div class="img__container">
+              <img class="carousel__img" src="./assets/images/ThinkSmart_One_Pro_for_Microsoft_Team_Rooms_CT3_01.avif" alt="Lenovo ThinkSmart One Pro" loading="lazy" decoding="async">
+            </div>
+            <div class="img__container">
+              <img class="carousel__img" src="./assets/images/ThinkSmart_One_Pro_for_Microsoft_Team_Rooms_CT3_02.avif" alt="Lenovo ThinkSmart One Pro" loading="lazy" decoding="async">
+            </div>
+            <div class="img__container">
+              <img class="carousel__img" src="./assets/images/ThinkSmart_One_Pro_for_Microsoft_Team_Rooms_CT3_03.avif" alt="Lenovo ThinkSmart One Pro" loading="lazy" decoding="async">
+            </div>
+            <div class="img__container">
+              <img class="carousel__img" src="./assets/images/ThinkSmart_One_Pro_for_Microsoft_Team_Rooms_CT3_04.avif" alt="Lenovo ThinkSmart One Pro" loading="lazy" decoding="async">
+            </div>
+            <div class="img__container">
+              <img class="carousel__img" src="./assets/images/ThinkSmart_One_Pro_for_Microsoft_Team_Rooms_CT3_05.avif" alt="Lenovo ThinkSmart One Pro" loading="lazy" decoding="async">
+            </div>
+            <div class="img__container">
+              <img class="carousel__img" src="./assets/images/ThinkSmart_One_Pro_for_Microsoft_Team_Rooms_CT3_06.avif" alt="Lenovo ThinkSmart One Pro" loading="lazy" decoding="async">
+            </div>
+          </div>
+        </div>
+        <button id="next-btn" class="carousel__btn" type="button" aria-label="Next image"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+        <div class="carousel__dots" id="carousel-dots"></div>
       </div>
     </div>
   </div>
@@ -440,6 +554,92 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </footer>
 
 <script>
+
+  // Image carousel
+  (function(){
+    const root = document.getElementById("carousel__container");
+    if (!root) return;
+    const track = root.querySelector(".carousel__track");
+    const slides = Array.from(root.querySelectorAll(".img__container"));
+    const dotsWrap = document.getElementById("carousel-dots");
+    const viewport = root.querySelector(".carousel__viewport");
+    const total = slides.length;
+    let current = 0;
+
+    // Auto-cycle: advance every AUTOPLAY_MS; pause while hovered, focused, dragged, or tab hidden.
+    // Skipped entirely for users who prefer reduced motion.
+    const AUTOPLAY_MS = 1500;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let timer = null, hovering = false, focused = false, dragging = false;
+    function schedule(){
+      clearTimeout(timer);
+      if (reduceMotion || hovering || focused || dragging || document.hidden) return;
+      timer = setTimeout(() => goTo(current + 1), AUTOPLAY_MS);
+    }
+    root.addEventListener("mouseenter", () => { hovering = true; schedule(); });
+    root.addEventListener("mouseleave", () => { hovering = false; schedule(); });
+    root.addEventListener("focusin", () => { focused = true; schedule(); });
+    root.addEventListener("focusout", e => { if (!root.contains(e.relatedTarget)) { focused = false; schedule(); } });
+    document.addEventListener("visibilitychange", schedule);
+
+    const dots = slides.map((_, i) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.setAttribute("aria-label", `Show image ${i + 1} of ${total}`);
+      b.addEventListener("click", () => goTo(i));
+      dotsWrap.appendChild(b);
+      return b;
+    });
+
+    function goTo(i){
+      current = (i + total) % total; // wrap around at both ends
+      track.style.transform = `translateX(-${current * 100}%)`;
+      slides.forEach((s, n) => s.setAttribute("aria-hidden", n !== current));
+      dots.forEach((d, n) => d.setAttribute("aria-current", n === current));
+      schedule(); // any navigation restarts the autoplay countdown
+    }
+    const showNextImage = () => goTo(current + 1);
+    const showPrevImage = () => goTo(current - 1);
+
+    document.getElementById("next-btn").addEventListener("click", showNextImage);
+    document.getElementById("prev-btn").addEventListener("click", showPrevImage);
+    root.addEventListener("keydown", e => {
+      if (e.key === "ArrowRight") showNextImage();
+      if (e.key === "ArrowLeft") showPrevImage();
+    });
+
+    // Swipe (touch, pen and mouse drag). The track follows the pointer, then snaps
+    // to the next/previous slide if dragged past the threshold, otherwise back.
+    // CSS touch-action:pan-y keeps vertical page scrolling working on phones.
+    let pointerId = null, startX = 0, dx = 0;
+    viewport.addEventListener("pointerdown", e => {
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+      pointerId = e.pointerId; startX = e.clientX; dx = 0;
+      dragging = true; schedule();
+      track.style.transition = "none";
+      viewport.classList.add("is-dragging");
+      viewport.setPointerCapture(e.pointerId);
+    });
+    viewport.addEventListener("pointermove", e => {
+      if (e.pointerId !== pointerId) return;
+      dx = e.clientX - startX;
+      track.style.transform = `translateX(calc(${-current * 100}% + ${dx}px))`;
+    });
+    function endDrag(e){
+      if (e.pointerId !== pointerId) return;
+      pointerId = null; dragging = false;
+      track.style.transition = "";
+      viewport.classList.remove("is-dragging");
+      const threshold = Math.min(60, viewport.clientWidth * 0.15);
+      if (dx < -threshold) showNextImage();
+      else if (dx > threshold) showPrevImage();
+      else goTo(current); // not far enough: snap back
+    }
+    viewport.addEventListener("pointerup", endDrag);
+    viewport.addEventListener("pointercancel", endDrag);
+
+    goTo(0);
+  })();
 
   // Country -> State/Province
   const US = ["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","District of Columbia","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"];
