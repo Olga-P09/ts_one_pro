@@ -1,6 +1,12 @@
 <!doctype html>
 <html lang="en">
 <head>
+<script async src="https://www.googletagmanager.com/gtm.js?id=GTM-TQZNF2LJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ThinkSmart One Pro</title>
@@ -12,7 +18,6 @@
     --ink:#111214; --ink-2:#3B3F46; --muted:#6B7079;
     --line:#E3E5E8; --bg:#FFFFFF; --bg-2:#F4F5F7; --bg-dark:#0E0F11;
     --intel:#0068B5; --ok:#1E7F4F; --err:#C4281C;
-    --note:#FFF4C2; --note-ink:#5A4A00;
     --r:14px; --max:1180px;
   }
   *{box-sizing:border-box}
@@ -185,16 +190,10 @@
   footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
   footer a{color:var(--muted)}
 
-  /* Review notes (mockup only) */
-  .note{display:none;background:var(--note);color:var(--note-ink);border:1px dashed #D9C14A;border-radius:8px;padding:8px 12px;font-size:12.5px;line-height:1.45;margin:12px 0}
-  .note b{color:#3A3000}
-  body.show-notes .note{display:block}
-  .notes-toggle{position:fixed;right:16px;bottom:16px;z-index:50;background:var(--note);color:var(--note-ink);border:1px solid #D9C14A;border-radius:999px;padding:10px 16px;font:600 13px Inter,sans-serif;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.15)}
 </style>
 </head>
-<body class="show-notes">
+<body>
 
-<button class="notes-toggle" id="notesToggle" type="button" aria-pressed="true">Hide review notes</button>
 
 <div class="ribbon">
   <div class="wrap">
@@ -237,7 +236,6 @@
         <span class="chip"><span class="dot" style="background:#0B5CFF"></span>Zoom Rooms</span>
         <span class="chip"><span class="dot" style="background:var(--intel)"></span>Intel® Core™ i5 with vPro®</span>
       </div>
-      <div class="note"><b>Review:</b> Benefit-led headline leaning on the audio award (strongest differentiator). Avoids "new"/"world's first" launch language from the 2025 press release. Teams/Zoom wording and Intel badge need approved copy + config confirmation.</div>
     </div>
     <div class="hero-visual">
       <img src="./assets/images/lenovo-thinksmart-one-pro.jpg" alt="Lenovo ThinkSmart One Pro collaboration bar" width="714" height="326" fetchpriority="high" decoding="async">
@@ -261,7 +259,6 @@
         <li><span>2</span><div><b>We route you to your regional rep</b>Matched by state or province.</div></li>
         <li><span>3</span><div><b>Your rep follows up</b>To schedule a demo at a time that suits you.</div></li>
       </ul>
-      <div class="note"><b>Routing:</b> Submission emails the territory rep based on State/Province, with Michael cc'd on every inquiry. Fallback if routing isn't feasible: all inquiries → Michael. Need from Amie: territory map, rep names/emails, Michael's email, coverage confirmation.</div>
     </div>
 
     <div class="card">
@@ -290,7 +287,6 @@
           <button class="btn btn-red" type="submit" id="submitBtn" data-track="form_submit">Request a demo</button>
           <small>* Required. A rep will follow up — this isn't a booked appointment.</small>
         </div>
-        <div class="note" style="margin-top:16px"><b>Mockup behaviour:</b> Validation and success state work. Type <b>error</b> in Company to preview the error state. No data is sent anywhere.</div>
       </form>
 
       <div class="success" id="success" role="status" aria-live="polite">
@@ -337,7 +333,6 @@
         <div class="for"><b>For partners:</b> faster installs, repeatable rollouts.</div>
       </div>
     </div>
-    <div class="note"><b>Review:</b> Claims drawn from the Lenovo press release and Intel solution brief. Confirm still-current inclusions (e.g. 3 years of deployment/security-update support, 1-year ThinkSmart Premium license) before adding them as offer value. Product targets <b>small meeting rooms</b>.</div>
   </div>
 </section>
 
@@ -355,7 +350,6 @@
         <div class="pcard"><div class="lg" style="background:#5B5FC7">T</div><div><h3>Microsoft Teams Rooms on Windows</h3><p>Familiar Windows management, TPM 2.0, Secure Boot and Defender support, plus Autopilot with Autologin.</p></div></div>
         <div class="pcard"><div class="lg" style="background:#0B5CFF">Z</div><div><h3>Zoom Rooms</h3><p>The same all-in-one bar for customers standardized on Zoom. <em style="color:var(--muted)">[Confirm config/SKU]</em></p></div></div>
       </div>
-      <div class="note"><b>Review:</b> Placeholder tiles stand in for official Teams/Zoom marks — use approved logos and certification language only.</div>
     </div>
   </div>
 </section>
@@ -378,7 +372,6 @@
         <h2>Close the year with better rooms.</h2>
         <p>For a limited time, Lenovo partners can access a special offer on ThinkSmart One Pro — a timely way to help customers put remaining budget to work before December 31. Your regional rep will share the details.</p>
         <a class="btn btn-red" href="#demo" data-track="cta_offer">Request a demo &amp; offer details</a>
-        <div class="note" style="margin-top:18px"><b>Review:</b> Premium "holiday exclusive" tone — no clearance language. Offer specifics need approved wording before anything quantitative goes here.</div>
       </div>
       <div class="count" aria-label="Time remaining in offer">
         <div><b id="cdD">--</b><span>Days</span></div>
@@ -416,7 +409,6 @@
         <div class="body"><h3>Technical specifications</h3><p>Detailed specs and deployment guidance for IT teams.</p><span class="go">View specs →</span></div>
       </a>
     </div>
-    <div class="note"><b>Review:</b> All links point to smartcollab.us for now — swap for the specific approved files (Amie's preferred PDF, product PPT, tech resources, video if available). Track link clicks separately from confirmed downloads.</div>
   </div>
 </section>
 
@@ -443,13 +435,6 @@
 </footer>
 
 <script>
-  // Review notes toggle
-  const tgl = document.getElementById('notesToggle');
-  tgl.addEventListener('click', () => {
-    const on = document.body.classList.toggle('show-notes');
-    tgl.textContent = on ? 'Hide review notes' : 'Show review notes';
-    tgl.setAttribute('aria-pressed', on);
-  });
 
   // Country -> State/Province
   const US = ["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","District of Columbia","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"];
