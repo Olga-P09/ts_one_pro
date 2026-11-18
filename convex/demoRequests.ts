@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { internalMutation } from "./_generated/server";
+import { internalMutation, internalQuery } from "./_generated/server";
 
 const optionalText = v.optional(v.string());
 const easternDate = new Intl.DateTimeFormat("en-US", {
@@ -18,8 +18,8 @@ export const create = internalMutation({
     phone: optionalText,
     jobTitle: optionalText,
     country: v.union(v.literal("United States"), v.literal("Canada")),
-    region: v.string(),
-    regionCode: v.string(),
+    region: optionalText,
+    regionCode: optionalText,
     consent: v.literal(true),
     utmSource: optionalText,
     utmMedium: optionalText,
@@ -34,7 +34,10 @@ export const create = internalMutation({
     const roster = await ctx.db.query("regionReps").collect();
     const countryNames = request.country === "Canada" ? ["canada", "ca"] : ["united states", "us"];
     const reps = roster.find(row =>
-      countryNames.includes(row.country.trim().toLowerCase()) && row.regions.includes(request.regionCode)
+      countryNames.includes(row.country.trim().toLowerCase())
+      && (request.regionCode
+        ? row.regions.includes(request.regionCode)
+        : request.country === "Canada" && row.territory === "Canada")
     );
     const now = new Date();
     const { year, month, day } = Object.fromEntries(
@@ -52,5 +55,24 @@ export const create = internalMutation({
       insideSales: reps?.insideSales,
       technicalConsultant: reps?.technicalConsultant,
     });
+  },
+});
+
+// Available in the Convex dashboard without exposing lead details to clients.
+export const latest = internalQuery({
+  args: {},
+  handler: async (ctx) => ctx.db.query("demoRequests").order("desc").take(100),
+});
+
+export const countByPost = internalQuery({
+  args: {},
+  handler: async (ctx) => {
+    const counts = new Map<string, number>();
+    for (const request of await ctx.db.query("demoRequests").collect()) {
+      const key = request.utmContent
+        ?? (request.utmSource ? `${request.utmSource} (no post id)` : "direct / unknown");
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+    return Array.from(counts, ([label, count]) => ({ label, count }));
   },
 });

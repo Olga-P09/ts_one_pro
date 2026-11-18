@@ -5,10 +5,18 @@ import { httpAction } from "./_generated/server";
 
 const ALLOWED_ORIGINS = new Set([
   "https://discoverthinksmart.com",
+  "https://www.discoverthinksmart.com",
   "https://ts-one-pro.kdoan.workers.dev",
   "https://ts-one-pro-demo-form.modest-sternum.workers.dev",
   "http://localhost:8787",
   "http://127.0.0.1:8787",
+]);
+
+const REGION_ALIASES = new Map([
+  ["washington dc", "dc"],
+  ["washington, d.c.", "dc"],
+  ["newfoundland", "nl"],
+  ["québec", "qc"],
 ]);
 
 function cors(request: Request) {
@@ -54,30 +62,31 @@ http.route({
     }
 
     const form = body as Record<string, unknown>;
-    if (form.consent !== true) {
+    if (form.consent !== true && form.consent !== "on" && form.consent !== "true") {
       return Response.json({ error: "Consent is required" }, { status: 400, headers });
     }
     if (text(form.website, 256)) return Response.json({ ok: true }, { headers });
 
     const firstName = text(form.firstName, 256);
     const lastName = text(form.lastName, 256);
-    const email = text(form.email, 254);
+    const email = text(form.email, 254)?.toLowerCase();
     const company = text(form.company, 256);
     const countryValue = text(form.country, 32)?.toLowerCase();
     const countryCode = countryValue === "ca" || countryValue === "canada" ? "CA"
       : countryValue === "us" || countryValue === "united states" ? "US" : undefined;
     const region = text(form.region, 128);
     const normalizedRegion = region?.toLowerCase();
+    const regionKey = normalizedRegion && (REGION_ALIASES.get(normalizedRegion) ?? normalizedRegion);
     const match = countryCode && Object.entries(regionsByCountry[countryCode]).find(([code, name]) =>
-      code.toLowerCase() === normalizedRegion || name.toLowerCase() === normalizedRegion
+      code.toLowerCase() === regionKey || name.toLowerCase() === regionKey
     );
     if (!firstName || !lastName || !email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)
-      || !company || !countryCode || !region || !match) {
+      || !company || !countryCode || (region && !match)) {
       return Response.json({ error: "Invalid or missing form fields" }, { status: 400, headers });
     }
 
     try {
-      await ctx.runMutation(internal.demoRequests.create, {
+      const id = await ctx.runMutation(internal.demoRequests.create, {
         firstName,
         lastName,
         email,
@@ -86,10 +95,10 @@ http.route({
         jobTitle: text(form.jobTitle, 256),
         country: countryCode === "CA" ? "Canada" : "United States",
         region,
-        regionCode: match[0],
+        regionCode: match?.[0],
         consent: true,
-        utmSource: text(form.utmSource, 256),
-        utmMedium: text(form.utmMedium, 256),
+        utmSource: text(form.utmSource, 256)?.toLowerCase(),
+        utmMedium: text(form.utmMedium, 256)?.toLowerCase(),
         utmCampaign: text(form.utmCampaign, 256),
         utmContent: text(form.utmContent, 256),
         utmTerm: text(form.utmTerm, 256),
@@ -97,7 +106,7 @@ http.route({
         sourceUrl: text(form.sourceUrl, 2048),
         userAgent: text(request.headers.get("User-Agent"), 1024),
       });
-      return Response.json({ ok: true }, { headers });
+      return Response.json({ ok: true, id }, { headers });
     } catch (error) {
       console.error("Could not save demo request", error);
       return Response.json({ error: "Could not save demo request" }, { status: 500, headers });
