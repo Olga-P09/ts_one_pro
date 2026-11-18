@@ -30,29 +30,39 @@ const utms = captureUtms();
 const form = document.getElementById("demoForm");
 const country = form.elements.namedItem("country");
 const region = form.elements.namedItem("region");
+const countryField = country.closest(".field");
+const regionField = region.closest(".field");
 const consent = form.elements.namedItem("consent");
 const error = document.getElementById("formError");
 const button = document.getElementById("submitBtn");
 const buttonLabel = button.textContent;
 const fields = form.querySelectorAll(".field input, .field select");
 
-function fillRegions() {
-  const canada = country.value === "CA";
-  const names = Object.values(regionsByCountry[country.value] ?? {});
-  document.getElementById("stLabel").firstChild.textContent = canada ? "Province / territory " : "State ";
-  document.getElementById("stMsg").textContent = canada
-    ? "Please choose your province or territory."
-    : "Please choose your state.";
-  region.replaceChildren(new Option("Select…", ""), ...names.map(name => new Option(name, name)));
-  region.closest(".field").classList.remove("invalid");
+for (const state of Object.values(regionsByCountry.US)) {
+  region.add(new Option(state, state));
 }
 
-country.addEventListener("change", fillRegions);
-fillRegions();
+function syncStateField() {
+  const needsState = country.value === "US";
+  countryField.classList.toggle("full", !needsState);
+  regionField.hidden = !needsState;
+  region.disabled = !needsState;
+  region.required = needsState;
+  if (!needsState) {
+    region.value = "";
+    regionField.classList.remove("invalid");
+  }
+}
+
+country.addEventListener("change", syncStateField);
+window.addEventListener("pageshow", syncStateField);
+syncStateField();
 
 function check(field) {
   const value = field.value.trim();
-  const valid = field.type === "email" ? /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value) : Boolean(value);
+  const valid = field.disabled || (value
+    ? field.type !== "email" || /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value)
+    : !field.required);
   field.closest(".field").classList.toggle("invalid", !valid);
   return valid;
 }
@@ -107,7 +117,7 @@ form.addEventListener("submit", async event => {
   }
 
   document.getElementById("sName").textContent = fieldsAsText.firstName;
-  document.getElementById("sRegion").textContent = fieldsAsText.region;
+  document.getElementById("sRegion").textContent = fieldsAsText.region || "Canada";
   form.style.display = "none";
   document.getElementById("success").style.display = "block";
   (window.dataLayer ??= []).push({ event: "demo_form_submit", utm_content: utms.utm_content || "direct" });

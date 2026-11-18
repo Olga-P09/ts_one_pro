@@ -389,14 +389,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <div class="field"><label for="ln">Last name <span class="req">*</span></label><input id="ln" name="lastName" autocomplete="family-name" required><div class="msg">Please enter your last name.</div></div>
           <div class="field full"><label for="em">Business email <span class="req">*</span></label><input id="em" name="email" type="email" autocomplete="email" required placeholder="name@company.com"><div class="msg">Please enter a valid business email.</div></div>
           <div class="field full"><label for="co">Company <span class="req">*</span></label><input id="co" name="company" autocomplete="organization" required><div class="msg">Please enter your company.</div></div>
+          <div class="field"><label for="phone">Phone number</label><input id="phone" type="tel" name="phone" autocomplete="tel"></div>
+          <div class="field"><label for="jobTitle">Job title</label><input id="jobTitle" type="text" name="jobTitle" autocomplete="organization-title"></div>
           <div class="field"><label for="ct">Country <span class="req">*</span></label>
             <select id="ct" name="country" required>
               <option value="US" selected>United States</option>
               <option value="CA">Canada</option>
             </select><div class="msg">Please choose a country.</div></div>
-          <div class="field"><label for="st" id="stLabel">State <span class="req">*</span></label>
+          <div class="field"><label for="st">State <span class="req">*</span></label>
             <select id="st" name="region" required><option value="">Select…</option></select>
-            <div class="msg" id="stMsg">Please choose your state.</div></div>
+            <div class="msg">Please choose your state.</div></div>
           <div class="full">
             <label class="consent" id="consentWrap"><input type="checkbox" id="consent" name="consent" required>
               <span>I agree that Lenovo and its authorized partners may contact me about ThinkSmart One Pro. See the <a href="#">Lenovo Privacy Statement</a>. <em style="color:var(--muted)">[Approved consent language TBC]</em></span>
