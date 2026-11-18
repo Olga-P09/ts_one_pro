@@ -1,0 +1,21 @@
+[
+  {"territory":"West","country":"United States",
+   "regions":["WA","OR","CA","NV","ID","MT","WY","UT","AZ","CO","NM","AK","HI"],
+   "territoryManager":{"name":"Adam Moss","email":"amoss@lenovo.com"},
+   "insideSales":{"name":"Christy Burgdorf","email":"cburgdorf@lenovo.com"},
+   "technicalConsultant":{"name":"Joe Garay","email":"jgaray@lenovo.com"},
+   "ccEmails":["mmontemayor1@lenovo.com"]},
+  {"territory":"Central","country":"United States",
+   "regions":["ND","SD","NE","KS","OK","TX","MN","IA","MO","AR","LA","MS","WI","IL","MI","IN"],
+   "territoryManager":{"name":"Clay Seydler","email":"rseydler@lenovo.com"},
+   "ccEmails":["mmontemayor1@lenovo.com"]},
+  {"territory":"East","country":"United States",
+   "regions":["OH","KY","TN","AL","GA","FL","SC","NC","VA","WV","PA","NY","NJ","DE","MD","DC","CT","RI","MA","VT","NH","ME"],
+   "insideSales":{"name":"Francisco Ortiz","email":"fortiz2@lenovo.com"},
+   "technicalConsultant":{"name":"Mark Whittaker","email":"mwhittaker@lenovo.com"},
+   "ccEmails":["mmontemayor1@lenovo.com"]},
+  {"territory":"Canada","country":"Canada",
+   "regions":["AB","BC","MB","NB","NL","NS","NT","NU","ON","PE","QC","SK","YT"],
+   "territoryManager":{"name":"Stefano Hanks","email":"shanks@lenovo.com"},
+   "ccEmails":["mmontemayor1@lenovo.com"]}
+]

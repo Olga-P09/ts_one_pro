@@ -1,7 +1,3 @@
-.git
-.claude
-.wrangler
-node_modules
-wrangler.jsonc
-.assetsignore
-.gitignore
+/*
+!/assets/
+!/index.html

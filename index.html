@@ -381,8 +381,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 
     <div class="card">
-      <form id="demoForm" novalidate>
+      <form id="demoForm" method="post" novalidate>
         <div class="alert err" id="formError" role="alert">Something went wrong sending your request. Please try again, or email your Lenovo partner contact directly.</div>
+        <input name="website" type="text" hidden tabindex="-1" autocomplete="off">
         <div class="grid">
           <div class="field"><label for="fn">First name <span class="req">*</span></label><input id="fn" name="firstName" autocomplete="given-name" required><div class="msg">Please enter your first name.</div></div>
           <div class="field"><label for="ln">Last name <span class="req">*</span></label><input id="ln" name="lastName" autocomplete="family-name" required><div class="msg">Please enter your last name.</div></div>
@@ -641,51 +642,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     goTo(0);
   })();
 
-  // Country -> State/Province
-  const US = ["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","District of Columbia","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"];
-  const CA = ["Alberta","British Columbia","Manitoba","New Brunswick","Newfoundland and Labrador","Northwest Territories","Nova Scotia","Nunavut","Ontario","Prince Edward Island","Quebec","Saskatchewan","Yukon"];
-  const ct = document.getElementById('ct'), st = document.getElementById('st');
-  function fillRegions(){
-    const ca = ct.value === 'CA';
-    document.getElementById('stLabel').innerHTML = (ca ? 'Province / territory' : 'State') + ' <span class="req">*</span>';
-    document.getElementById('stMsg').textContent = ca ? 'Please choose your province or territory.' : 'Please choose your state.';
-    st.innerHTML = '<option value="">Select…</option>' + (ca ? CA : US).map(s => `<option>${s}</option>`).join('');
-  }
-  ct.addEventListener('change', fillRegions); fillRegions();
-
-  // Validation + mock submit
-  const form = document.getElementById('demoForm');
-  const emailOk = v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
-  function check(el){
-    const f = el.closest('.field'); if(!f) return true;
-    const ok = el.type === 'email' ? emailOk(el.value.trim()) : el.value.trim() !== '';
-    f.classList.toggle('invalid', !ok); return ok;
-  }
-  form.querySelectorAll('input:not([type=checkbox]),select').forEach(el => {
-    el.addEventListener('blur', () => { if (el.value) check(el); });
-    el.addEventListener('input', () => { if (el.closest('.field').classList.contains('invalid')) check(el); });
-  });
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const errBox = document.getElementById('formError'); errBox.classList.remove('show');
-    let first = null, ok = true;
-    form.querySelectorAll('input:not([type=checkbox]),select').forEach(el => { if(!check(el)){ ok=false; first = first || el; } });
-    const c = document.getElementById('consent');
-    document.getElementById('consentWrap').classList.toggle('invalid', !c.checked);
-    if(!c.checked){ ok=false; first = first || c; }
-    if(!ok){ first.focus(); return; }
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = true; btn.textContent = 'Sending…';
-    setTimeout(() => {
-      btn.disabled = false; btn.textContent = 'Request a demo';
-      if (document.getElementById('co').value.trim().toLowerCase() === 'error') { errBox.classList.add('show'); return; }
-      document.getElementById('sName').textContent = document.getElementById('fn').value.trim();
-      document.getElementById('sRegion').textContent = st.value;
-      form.style.display = 'none';
-      document.getElementById('success').style.display = 'block';
-    }, 900);
-  });
-
   // Countdown to Dec 31 end of day
   const end = new Date(2026, 11, 31, 23, 59, 59);
   function tick(){
@@ -699,5 +655,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   }
   tick(); setInterval(tick, 30000);
 </script>
+<script type="module" src="/assets/form-submit.js"></script>
 </body>
 </html>
